@@ -4,6 +4,41 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 from tkinter.font import Font
 
+import ast
+
+#  check & insert formatting in opened files
+def insert_formatting(tagged_text):
+
+  # set up formatting tags
+  bold_font = Font(weight="bold")  
+  txt_edit.tag_configure("BOLD", font=bold_font)
+  txt_edit.tag_configure("HIGHLIGHT", background="yellow", foreground="red")
+  
+  # iterate over list of tuples
+  for index, tuple in enumerate(tagged_text):
+    item_one = tuple[0]
+    item_two = tuple[1]
+    # print(index, item_one, item_two)
+    # search for tags starts
+    if item_one == "tagon":
+
+      if item_two == "BOLD":
+        tag_start = tagged_text[index][2]
+        tag_end = tagged_text[index + 2][2] # tag end two tupples ahead        
+        # print(tag_start,tag_end)
+        txt_edit.tag_add("BOLD", tag_start, tag_end) # add formatting 
+
+      elif item_two == "HIGHLIGHT": 
+        tag_start = tagged_text[index][2]
+        tag_end = tagged_text[index + 2][2]         
+        # print(tag_start,tag_end)
+        txt_edit.tag_add("HIGHLIGHT", tag_start, tag_end)  
+
+    else: # ignore other tags - taggoff / text    
+      pass  
+
+
+
 # display a file open dialog box and store the selected file path to filepath
 def open_file():
     
@@ -19,12 +54,28 @@ def open_file():
     with open(filepath, "r") as input_file:
         text = input_file.read()
 
-      # iterate over this array of tuples and insert the appropriate text data or add tag information to the text widget. 
+        # Convert string to list (of tuples)
+        tagged_text = ast.literal_eval(text)
+        # print(type(tagged_text))
+        text_string = ""
+        # iterate over list to extract text
+        for index, tuple in enumerate(tagged_text):
+          item_one = tuple[0]
+          item_two = tuple[1]
+          # print(index, item_one, item_two)
 
-        # assigns the string text to txt_edit
-        txt_edit.insert(tk.END, text)
+          if item_one == "text":
+            # print(item_two)
+            text_string += item_two
+
+        # insert text in entry box
+        txt_edit.insert(tk.END, text_string)
+
     # set window title with the path of the open file
     window.title(f"Wordz Text Editor - {filepath}")
+    insert_formatting(tagged_text)
+    
+
 
 # display a file save dialog box - extract text in txt_edit and write to file
 def save_file():
@@ -170,6 +221,8 @@ window.mainloop()
 # https://pythonexamples.org/python-tkinter-button-change-font/#5
 
 # https://stackoverflow.com/questions/49195601/python-tkinter-saving-text-and-keeping-text-format/49196452
+
+# https://www.geeksforgeeks.org/python-convert-a-string-representation-of-list-into-list/
 
 """
 [('mark', 'current', '1.0'), ('text', 'Hello', '1.0')]

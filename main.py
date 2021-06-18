@@ -1,6 +1,6 @@
 # import text_ed
-import temp
+# import temp
 # import counter
 # import dice_roll
 # import temp_conv 
-# import text_editor
+import text_editor

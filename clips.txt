@@ -1,0 +1,71 @@
+def open_file():
+    
+    filepath = askopenfilename(
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+    )
+    # check if the user closes the dialog box or Cancels
+    if not filepath:
+        return
+    # clear any current contents of txt_edit
+    txt_edit.delete(1.0, tk.END)
+    # open & read file
+    with open(filepath, "r") as input_file:
+        text = input_file.read()
+
+      # iterate over this array of tuples and insert the appropriate text data or add tag information to the text widget. 
+
+        # assigns the string text to txt_edit
+        txt_edit.insert(tk.END, text)
+    # set window title with the path of the open file
+    window.title(f"Wordz Text Editor - {filepath}")
+
+
+def open_file():
+    
+    filepath = askopenfilename(
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+    )
+    # check if the user closes the dialog box or Cancels
+    if not filepath:
+        return
+    # clear any current contents of txt_edit
+    txt_edit.delete(1.0, tk.END)
+    # open & read file
+    with open(filepath, "r") as input_file:
+        text = input_file.read()
+
+        # Convert string to list (of tuples)
+        tagged_text = ast.literal_eval(text)
+        # print(type(tagged_text))
+        text_formatted = ""
+
+        for index, tuple in enumerate(tagged_text):
+          item_one = tuple[0]
+          item_two = tuple[1]
+          # print(index, item_one, item_two)
+          # text_str += item_two
+
+          if item_one == "text":
+            print(item_two)
+            text_formatted += item_two
+          elif item_one == "tagon":
+            new_index = index + 1
+            # print(tagged_text[new_index][1])
+            if item_two == "BOLD":
+              item = tagged_text[new_index][1] #str
+              # print(type(item))
+              # print(tagged_text[new_index][1])
+              # apply formatting & concat?
+
+              bold_font = Font(weight="bold")  
+              txt_edit.tag_configure("BOLD", font=bold_font)
+              txt_edit.tag_add("BOLD", 0, tk.END)
+              text_formatted += item
+              tagged_text.remove(tagged_text[new_index]) # remove to avoid repeat
+
+            elif item_two == "HIGHLIGHT":   
+              print(tagged_text[new_index][1])
+              # apply formatting & concat?      
+              tagged_text.remove(tagged_text[new_index]) # remove to avoid repeat
+          else: # taggoff
+            pass
