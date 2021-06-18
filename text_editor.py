@@ -38,7 +38,6 @@ def insert_formatting(tagged_text):
       pass  
 
 
-
 # display a file open dialog box and store the selected file path to filepath
 def open_file():
     
